@@ -48,6 +48,13 @@ ON `pr_stanze`.`id_prenotazione` = `pagamenti`.`prenotazione_id`
 ---
 5 - Prendi i dati di fatturazione per la prenotazione con id=7
 
+SELECT *
+FROM `pagamenti`
+JOIN `paganti`
+ON `pagamenti`.`pagante_id` = `paganti`.`id`
+WHERE `pagamenti`.`id` = 7
+
 ---
 6 - Le stanze sono state tutte prenotate almeno una volta?
 (Visualizzare le stanze non ancora prenotate)
+
