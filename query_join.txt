@@ -1,13 +1,49 @@
 1 - Come si chiamano gli ospiti che hanno fatto più di due prenotazioni?
 
+SELECT `ospite_id`, `name`, `lastname`, COUNT(`ospite_id`) AS `tot_prenotazioni`
+FROM (
+	SELECT `prenotazioni_has_ospiti`.`prenotazione_id`, `ospiti`.`id` AS `ospite_id`, `ospiti`.`name`, `ospiti`.`lastname`
+	FROM `prenotazioni_has_ospiti`
+	INNER JOIN `ospiti`
+	ON `prenotazioni_has_ospiti`.`ospite_id` = `ospiti`.`id`
+) AS `tab_numero_prenotazioni`
+GROUP BY `ospite_id`
+HAVING `tot_prenotazioni` > 2;
+
 ---
 2 - Stampare tutti gli ospiti per ogni prenotazione
+
+SELECT `prenotazioni_has_ospiti`.`prenotazione_id`, `ospiti`.`id` AS `ospite_id`, `ospiti`.`name`, `ospiti`.`lastname`
+FROM `prenotazioni_has_ospiti`
+INNER JOIN `ospiti`
+ON `prenotazioni_has_ospiti`.`ospite_id` = `ospiti`.`id`
 
 ---
 3 - Stampare Nome, Cognome, Prezzo e Pagante per tutte le prenotazioni fatte a Maggio 2018
 
+SELECT `tab_prenotazioni_maggio`.`prenotazione_id`, `tab_prenotazioni_maggio`.`data_prenotazione`, `tab_prenotazioni_maggio`.`price`, `tab_prenotazioni_maggio`.`pagante_id`, `paganti`.`name`, `paganti`.`lastname`
+FROM (
+	SELECT `prenotazioni`.`id` AS `prenotazione_id`, `prenotazioni`.`created_at` AS `data_prenotazione`, `pagamenti`.`price`, `pagamenti`.`pagante_id`
+	FROM `prenotazioni`
+	JOIN `pagamenti`
+	ON `prenotazioni`.`id` = `pagamenti`.`prenotazione_id`
+	WHERE YEAR(`prenotazioni`.`created_at`) = 2018
+	AND MONTH(`prenotazioni`.`created_at`) = 05 ) AS `tab_prenotazioni_maggio`
+JOIN `paganti`
+ON `tab_prenotazioni_maggio`.`pagante_id` = `paganti`.`id`
+
 ---
 4 - Fai la somma di tutti i prezzi delle prenotazioni per le stanze del primo piano
+
+SELECT SUM(`price`) AS `tot_stanze_pp`
+FROM (
+	SELECT `prenotazioni`.`id` AS `id_prenotazione`, `stanze`.`room_number`, `stanze`.`floor`
+	FROM `prenotazioni`
+	JOIN `stanze`
+	ON `prenotazioni`.`stanza_id` = `stanze`.`id`
+	WHERE `stanze`.`floor` = 1 ) AS `pr_stanze`
+JOIN `pagamenti`
+ON `pr_stanze`.`id_prenotazione` = `pagamenti`.`prenotazione_id`
 
 ---
 5 - Prendi i dati di fatturazione per la prenotazione con id=7
