@@ -38,9 +38,20 @@ FROM (
 ---
 5 - Quante prenotazioni ha fatto l’ospite che ha fatto più prenotazioni?
 
+#5.1 con tabella di appoggio
 SELECT MAX(`numero_prenotazioni`) AS `max_prenotazioni_ospite`
 FROM (
 	SELECT `ospite_id` AS `ospite`, COUNT(`ospite_id`) AS `numero_prenotazioni`
 	FROM `prenotazioni_has_ospiti`
 	GROUP BY `ospite_id`
 ) AS `tabella_max_prenotazioni_ospite`;
+
+#5.2
+SELECT `ospite_id` AS `ospite`, COUNT(`ospite_id`) AS `numero_prenotazioni`
+FROM `prenotazioni_has_ospiti`
+GROUP BY `ospite_id`
+ORDER BY `numero_prenotazioni` DESC
+LIMIT 1
+
+
+
