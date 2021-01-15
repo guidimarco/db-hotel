@@ -1,5 +1,6 @@
 1 - Come si chiamano gli ospiti che hanno fatto più di due prenotazioni?
 
+#1.1
 SELECT `ospite_id`, `name`, `lastname`, COUNT(`ospite_id`) AS `tot_prenotazioni`
 FROM (
 	SELECT `prenotazioni_has_ospiti`.`prenotazione_id`, `ospiti`.`id` AS `ospite_id`, `ospiti`.`name`, `ospiti`.`lastname`
@@ -9,6 +10,14 @@ FROM (
 ) AS `tab_numero_prenotazioni`
 GROUP BY `ospite_id`
 HAVING `tot_prenotazioni` > 2;
+
+#1.2
+SELECT `ospiti`.`id`, `ospiti`.`name`, `ospiti`.`lastname`, COUNT(*) AS `numero_prenotazioni`
+FROM `prenotazioni_has_ospiti`
+INNER JOIN `ospiti`
+ON `prenotazioni_has_ospiti`.`ospite_id` = `ospiti`.`id`
+GROUP BY `ospiti`.`id`
+HAVING `numero_prenotazioni` > 2;
 
 ---
 2 - Stampare tutti gli ospiti per ogni prenotazione
