@@ -30,6 +30,7 @@ ON `prenotazioni_has_ospiti`.`ospite_id` = `ospiti`.`id`
 ---
 3 - Stampare Nome, Cognome, Prezzo e Pagante per tutte le prenotazioni fatte a Maggio 2018
 
+#3.1
 SELECT `tab_prenotazioni_maggio`.`prenotazione_id`, `tab_prenotazioni_maggio`.`data_prenotazione`, `tab_prenotazioni_maggio`.`price`, `tab_prenotazioni_maggio`.`pagante_id`, `paganti`.`name`, `paganti`.`lastname`
 FROM (
 	SELECT `prenotazioni`.`id` AS `prenotazione_id`, `prenotazioni`.`created_at` AS `data_prenotazione`, `pagamenti`.`price`, `pagamenti`.`pagante_id`
@@ -41,6 +42,7 @@ FROM (
 JOIN `paganti`
 ON `tab_prenotazioni_maggio`.`pagante_id` = `paganti`.`id`;
 
+#3.2
 SELECT `prenotazioni`.`id` AS `cod_prenotazione`, `prenotazioni`.`created_at`, `pagamenti`.`price` AS `prezzo`, `paganti`.`name`, `paganti`.`lastname`
 FROM `prenotazioni`
 JOIN `pagamenti` ON `prenotazioni`.`id` = `pagamenti`.`prenotazione_id`
@@ -51,6 +53,7 @@ AND MONTH(`prenotazioni`.`created_at`) = 05;
 ---
 4 - Fai la somma di tutti i prezzi delle prenotazioni per le stanze del primo piano
 
+#4.1
 SELECT SUM(`price`) AS `tot_stanze_pp`
 FROM (
 	SELECT `prenotazioni`.`id` AS `id_prenotazione`, `stanze`.`room_number`, `stanze`.`floor`
@@ -61,6 +64,16 @@ FROM (
 JOIN `pagamenti`
 ON `pr_stanze`.`id_prenotazione` = `pagamenti`.`prenotazione_id`;
 
+#4.2
+SELECT SUM(`pagamenti`.`price`) AS `tot_pagamenti_pp`
+FROM `stanze`
+JOIN `prenotazioni`
+ON `stanze`.`id` = `prenotazioni`.`stanza_id`
+JOIN `pagamenti`
+ON `prenotazioni`.`id` = `pagamenti`.`prenotazione_id`
+WHERE `stanze`.`floor` = 1;
+
+
 ---
 5 - Prendi i dati di fatturazione per la prenotazione con id=7
 
@@ -68,7 +81,7 @@ SELECT *
 FROM `pagamenti`
 JOIN `paganti`
 ON `pagamenti`.`pagante_id` = `paganti`.`id`
-WHERE `pagamenti`.`id` = 7;
+WHERE `prenotazioni`.`id` = 7;
 
 ---
 6 - Le stanze sono state tutte prenotate almeno una volta?
